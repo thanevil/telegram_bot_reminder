@@ -26,10 +26,15 @@ def reminder():
     bot_token = "<bot token>"
     chat_id = "<user chat ID>"
     debug_id = "<admin chat ID>"
+    response = None
     message = "please drink water <3"
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&text={message}"
     logger.debug("Sending message")
-    response = requests.get(url).json()
+    try:
+        response = requests.get(url).json()
+    except Exception as e:
+        logger.exception("Failed to send message")
+        logger.critical(f"Error: {type(e).__name__} - {str(e)}")
     formatted_string = json.dumps(response, indent=4)
     time_stamp = re.compile(r'"date": (\d+),')
     status = re.compile(r'"error_code": (\d+),')
